@@ -16,4 +16,11 @@ class Nucleotide:
     
     def add_atoms(self,atoms):
         self.list_atom.append(atoms)
+
+#lecture du fichier pdb
+with open("data/8D28.pdb", "r") as pdb_file:
+    for line in pdb_file:
+        if line.startswith("ATOM"):
+            print(line.strip())
+
  
