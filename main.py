@@ -8,6 +8,10 @@ class Atom:
         self.y = coord_y
         self.z = coord_z
 
+    def calculate_distance(self, other_atom):
+        result = ((other_atom.x - self.x)**2 + (other_atom.y - self.y)**2 + (other_atom.z - self.z)**2)**0.5
+        return result
+        
 class Nucleotide:
     def __init__(self,name,position):
         self.name = name
@@ -30,5 +34,6 @@ with open("data/8D28.pdb", "r") as pdb_file:
             else:
                 dict_nucleotide[column[5]] = Nucleotide(column[3],column[5])
             dict_nucleotide[column[5]].add_atom(atom)
+
 
  
