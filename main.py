@@ -21,6 +21,15 @@ class Nucleotide:
     def add_atom(self,atoms):
         self.list_atom.append(atoms)
 
+    def count_hydrogen_bonds(self, other_nucleotide):
+        number_hydrogene_bonds = 0
+        for atom_a in self.list_atom:
+            for atom_b in other_nucleotide.list_atom:
+                result = atom_a.calculate_distance(atom_b)
+                if 2.5 <= result <= 3.5:
+                    number_hydrogene_bonds += 1
+        return number_hydrogene_bonds
+            
 #lecture du fichier pdb
 dict_nucleotide = []
 
