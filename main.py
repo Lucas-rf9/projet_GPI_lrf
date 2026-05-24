@@ -5,17 +5,21 @@ from rna_classes import Atom, Nucleotide
 def convert_2d_rna_structure(file_name):
 #lecture du fichier pdb
     dict_nucleotide = {}
-    with open(file_name, "r") as pdb_file:
-        for line in pdb_file:
-            if line.startswith("ATOM"):
-                column = line.strip().split()
-                atom = Atom(column[2],float(column[6]),float(column[7]),float(column[8]))
-                if column[5] in dict_nucleotide:
-                    pass
-                else:
-                    dict_nucleotide[column[5]] = Nucleotide(column[3],column[5])
-                dict_nucleotide[column[5]].add_atom(atom)
-
+    try:
+        with open(file_name, "r") as pdb_file:
+            for line in pdb_file:
+                if line.startswith("ATOM"):
+                    column = line.strip().split()
+                    atom = Atom(column[2],float(column[6]),float(column[7]),float(column[8]))
+                    if column[5] in dict_nucleotide:
+                        pass
+                    else:
+                        dict_nucleotide[column[5]] = Nucleotide(column[3],column[5])
+                    dict_nucleotide[column[5]].add_atom(atom)
+    except FileNotFoundError:
+        print(f"Erreur : Le fichier '{file_name}' est introuvable. Vérifiez le chemin d'accès.")
+        sys.exit(1)
+    
     #on trie les keys cad les numéros des nucléotides dans l'ordre
     keys = list(dict_nucleotide.keys())
     bracket_list = ["."] * len(keys)
