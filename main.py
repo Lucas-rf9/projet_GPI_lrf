@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+import sys
 #création des différentes classes
 class Atom:
     def __init__(self,name,coord_x,coord_y,coord_z):
@@ -46,17 +46,35 @@ with open("data/8D28.pdb", "r") as pdb_file:
 
 #on trie les keys cad les numéros des nucléotides dans l'ordre
 keys = list(dict_nucleotide.keys())
+bracket_list = ["."] * len(keys)
 
 for i in range(len(keys)):
-    for j in range(i + 1, len(keys)):
+    for j in range(i + 4, len(keys)):
         nucleotide_A = dict_nucleotide[keys[i]]
         nucleotide_B = dict_nucleotide[keys[j]]
         number_bonds = nucleotide_A.count_hydrogen_bonds(nucleotide_B)
         #pour la paire G-C
-        if number_bonds == 3:
+        if number_bonds >= 3:
             if (nucleotide_A.name == "G" and nucleotide_B.name == "C") or (nucleotide_A.name == "C" and nucleotide_B.name == "G"):
-                print(nucleotide_A.position,"pb trouvée :)")
+                bracket_list[i] = "("
+                bracket_list[j] = ")"
+        #pour les paires à deux liaisons
+        elif number_bonds >= 2:
+            #pour la paire A-U
+            if (nucleotide_A.name == "A" and nucleotide_B.name == "U") or (nucleotide_A.name == "U" and nucleotide_B.name == "A"):
+                bracket_list[i] = "("
+                bracket_list[j] = ")"
+            #pour la paire G-U
+            elif (nucleotide_A.name == "G" and nucleotide_B.name == "U") or (nucleotide_A.name == "U" and nucleotide_B.name == "G"):
+                bracket_list[i] = "("
+                bracket_list[j] = ")"
 
+sequence_list = []
+for i in range(len(bracket_list)):
+    sequence_list.append(dict_nucleotide[keys[i]].name)
+
+print("".join(sequence_list))
+print("".join(bracket_list))
 
 
 
