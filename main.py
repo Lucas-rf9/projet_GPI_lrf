@@ -31,7 +31,7 @@ class Nucleotide:
         return number_hydrogene_bonds
             
 #lecture du fichier pdb
-dict_nucleotide = []
+dict_nucleotide = {}
 
 with open("data/8D28.pdb", "r") as pdb_file:
     for line in pdb_file:
@@ -44,5 +44,19 @@ with open("data/8D28.pdb", "r") as pdb_file:
                 dict_nucleotide[column[5]] = Nucleotide(column[3],column[5])
             dict_nucleotide[column[5]].add_atom(atom)
 
+#on trie les keys cad les numéros des nucléotides dans l'ordre
+keys = list(dict_nucleotide.keys())
 
- 
+for i in range(len(keys)):
+    for j in range(i + 1, len(keys)):
+        nucleotide_A = dict_nucleotide[keys[i]]
+        nucleotide_B = dict_nucleotide[keys[j]]
+        number_bonds = nucleotide_A.count_hydrogen_bonds(nucleotide_B)
+        #pour la paire G-C
+        if number_bonds == 3:
+            if (nucleotide_A.name == "G" and nucleotide_B.name == "C") or (nucleotide_A.name == "C" and nucleotide_B.name == "G"):
+                print(nucleotide_A.position,"pb trouvée :)")
+
+
+
+
