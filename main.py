@@ -3,7 +3,11 @@ import sys
 from rna_classes import Atom, Nucleotide
 
 def convert_2d_rna_structure(file_name):
-#lecture du fichier pdb
+    """
+    Lit un fichier PDB d'ARN, extrait les coordonnées, calcule les liaisons
+    hydrogènes et affiche la structure 2D au format bracket notation.
+    """
+    #Lecture et parsing du fichier pdb
     dict_nucleotide = {}
     try:
         with open(file_name, "r") as pdb_file:
@@ -20,7 +24,7 @@ def convert_2d_rna_structure(file_name):
         print(f"Erreur : Le fichier '{file_name}' est introuvable. Vérifiez le chemin d'accès.")
         sys.exit(1)
     
-    #on trie les keys cad les numéros des nucléotides dans l'ordre
+    #Extraction et tri des identifiants (clés) pour respecter l'ordre de la séquence
     keys = list(dict_nucleotide.keys())
     bracket_list = ["."] * len(keys)
 
@@ -54,7 +58,7 @@ def convert_2d_rna_structure(file_name):
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
-        print("Erreur : Veuillez fournir un fichier PDB en argument. Exemple : python projet_1.py 1EHZ.pdb")
+        print("Erreur : Veuillez fournir un fichier PDB en argument. Exemple : python main.py 1EHZ.pdb")
         sys.exit(1)
     file_name = sys.argv[1]
     convert_2d_rna_structure(file_name)
