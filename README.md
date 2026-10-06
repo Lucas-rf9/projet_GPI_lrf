@@ -23,8 +23,10 @@ python main.py 1EHZ.pdb
 ## 3. Architecture Logicielle et Modélisation
 Le code a été modularisé pour séparer la théorie (logique métier) de l'exécution (scripting) :
 
-* **`rna_classes.py` (Modélisation Orientée Objet) :** Contient les classes `Atom` et `Nucleotide`. Cette structure encapsule les coordonnées 3D (x, y, z) et intègre les méthodes de calcul de distance euclidienne. La détection des liaisons hydrogènes s'effectue via une fenêtre de tolérance spatiale stricte (entre 2.5 Å et 3.5 Å).
-* **`main.py` (Exécution et Algorithmique) :** Gère le parsing (lecture) du fichier PDB et l'instanciation des objets. L'algorithme de prédiction applique ensuite un double filtre :
-    1. Un seuil quantitatif de liaisons hydrogènes (>= 3 pour G-C, >= 2 pour A-U / G-U).
-    2. Un filtre de décalage positionnel (i+4) dans la séquence afin d'ignorer les contacts diagonaux liés à l'empilement (*stacking*) des bases.
-* **Génération du rendu :** Les paires identifiées modifient dynamiquement une liste d'états pour construire la séquence et sa *bracket notation* finale.
+* **`rna_classes.py` (Modélisation Orientée Objet) :** Contient les classes `Atom` et `Nucleotide`. Un nucléotide est identifié par sa chaîne et son numéro de résidu, et indexe ses atomes par nom. Les liaisons hydrogènes sont détectées uniquement entre les couples donneur/accepteur attendus pour chaque paire canonique (ex. G:N1–C:N3, G:N2–C:O2, G:O6–C:N4), dans une fenêtre de 2.5 à 3.5 Å. Les nucléotides modifiés courants (PSU, 5MC, 2MG, H2U...) sont ramenés à leur base parente.
+* **`main.py` (Exécution et Algorithmique) :**
+    1. **Parsing PDB** sur les colonnes à largeur fixe du format (robuste aux coordonnées négatives collées), lecture des lignes `ATOM` et `HETATM`, du premier modèle uniquement et de la première conformation alternative ; l'eau, les ions et les ligands sont ignorés.
+    2. **Détection des paires** G-C (3 liaisons), A-U et G-U (2 liaisons), avec une boucle minimale de 3 nucléotides entre deux bases appariées.
+    3. **Appariement unique** : chaque nucléotide n'appartient qu'à une seule paire ; en cas de conflit, la paire la plus liée est retenue.
+    4. **Bracket notation** avec gestion des pseudo-nœuds : les paires qui se croisent sont notées `[]`, puis `{}`, puis `<>`.
+* **`test_main.py` :** tests unitaires sur des structures synthétiques, à lancer avec `python -m unittest`.
